@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import *
+#from pygame.locals import *
 
 grid = [[0,0,0,0,0,0,0,0,0],
         [0,3,0,0,0,0,1,6,0],
@@ -16,46 +16,61 @@ BLACK = pygame.Color(0, 0, 0)         # Black
 WHITE = pygame.Color(255, 255, 255)   # White
 GREY = pygame.Color(128, 128, 128)   # Grey
 RED = pygame.Color(255, 0, 0)       # Red
+WINDOW_SIZE = 450
+GRID_SIZE = WINDOW_SIZE//9
 
 
+def main():
+    global screen,clock
+    pygame.init()
+    pygame.font.init()
+    global num_font
+    num_font = pygame.font.SysFont("Helvetica",round(GRID_SIZE*0.75))
+    #myfont = pygame.font.SysFont('Comic Sans MS', round(grid_size*0.75))
+    
+    screen = pygame.display.set_mode((WINDOW_SIZE,WINDOW_SIZE))
+    pygame.display.set_caption("Sudoku")
+    clock = pygame.time.Clock()
+    screen.fill(WHITE)
+    
+    createGrid()
+    placeSquares()
 
-pygame.init()
-FPS = 30
-FramePerSec = pygame.time.Clock()
+    running = True
+    while running:
+        pygame.init()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                #sys.exit()
+            if event.type == pygame.KEYDOWN:
+                grid = solve()
+                createGrid()
+                placeSquares()
+                gridPrint()
+            
 
-
-
-screen = pygame.display.set_mode((450,450))
-screen.fill(WHITE)
-pygame.display.set_caption("sukoku program")
-
-
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.display.quit()
+    pygame.quit()
 
 
 
 
 def createGrid():
-    width = 30
-    height = 30
-    space = 60
-    for row in range(9):
-        for column in range(9):
-            pygame.draw.rect(screen, GREY,
-                             [width * column + space,
-                                height * row + space,
-                              width,
-                              height],1)
+    for x in range(9):
+        for y in range(9):
+            rect = pygame.Rect(x*GRID_SIZE,y*GRID_SIZE,
+                               GRID_SIZE,GRID_SIZE)
+            pygame.draw.rect(screen,WHITE,rect)
+            pygame.draw.rect(screen,BLACK,rect,1)
 
-    for i in range(2):
-        pygame.draw.line(screen,GREY,
-                         (3*width*(i+1)+space,space),
-                         (3*width*(i+1)+space,space+9*height), 5)
-
-    
-    for i in range(2):
-        pygame.draw.line(screen,GREY,
-                         (space,3*width*(i+1)+space),
-                         (space+9*height,3*width*(i+1)+space), 5)                         
+    for x in range(0,9,3):
+        for y in range(0,9,3):
+            rect = pygame.Rect(x*GRID_SIZE,y*GRID_SIZE,
+                               3*GRID_SIZE,3*GRID_SIZE)
+            pygame.draw.rect(screen,BLACK,rect,5)                      
 
 
 def placeSquares():
@@ -69,7 +84,7 @@ def placeSquares():
             if num == "0":
                 num = " "
             squares = myFont.render(str(num),1,BLACK)
-            screen.blit(squares,(70+30*j,60+30*i))
+            screen.blit(squares,(GRID_SIZE*j+20,GRID_SIZE*i+15))
     
 
 def gridPrint():
@@ -112,6 +127,7 @@ def solve():
 
                 return
     gridPrint()
+    return grid
     #input("hello")
 
 
@@ -119,39 +135,15 @@ def solve():
 #gridPrint(grid)
 #print('\n\n')
 
-solve()
-screen.fill(WHITE)
-createGrid()
+#solve()
+#screen.fill(WHITE)
+#createGrid()
 
-placeSquares()
-
-
-running = True
-
-a = True
-
-while running:
-    #pygame.draw.circle(screen, RED, (200,50), 30)
-    #pygame.draw.rect(screen, BLACK, (100, 200, 100, 50), 2)
-    #solve()
-    #screen.fill(WHITE)
-    #createGrid()
-    #solve()
-    #placeSquares()
-    
-    
+#placeSquares()
 
 
-
-
-    
-    pygame.display.update()
-    FramePerSec.tick(FPS)
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.display.quit()
-            running = False
+if __name__ == "__main__":
+    main()
 
 
 
