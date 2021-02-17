@@ -1,23 +1,28 @@
 import pygame
+import requests
+import json
 #from pygame.locals import *
 
 grid = [[0,0,0,0,0,0,0,0,0],
-        [0,3,0,0,0,0,1,6,0],
-        [0,6,7,0,3,5,0,0,4],
-        [6,0,8,1,2,0,9,0,0],
-        [0,9,0,0,8,0,0,3,0],
-        [0,0,2,0,7,9,8,0,6],
-        [8,0,0,6,9,0,3,5,0],
-        [0,2,6,0,0,0,0,9,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0]]
 
+NUM_SQUARES = 9;
+DIFFICULTY = 1;
 
-BLACK = pygame.Color(0, 0, 0)         # Black
-WHITE = pygame.Color(255, 255, 255)   # White
-GREY = pygame.Color(128, 128, 128)   # Grey
-RED = pygame.Color(255, 0, 0)       # Red
+pygame.init()
+BLACK = pygame.Color(0, 0, 0)
+WHITE = pygame.Color(255, 255, 255)
+GREY = pygame.Color(128, 128, 128)
+RED = pygame.Color(255, 0, 0)
 WINDOW_SIZE = 450
-GRID_SIZE = WINDOW_SIZE//9
+GRID_SIZE = WINDOW_SIZE//NUM_SQUARES
 
 
 def main():
@@ -32,22 +37,30 @@ def main():
     pygame.display.set_caption("Sudoku")
     clock = pygame.time.Clock()
     screen.fill(WHITE)
+
+
+    r = requests.get("http://www.cs.utep.edu/cheon/ws/sudoku/new/?size=9&level=1")
+    response = r.json()
+    if (response["response"]):
+        squares = response["squares"]
+        for i in squares:
+            grid[i["y"]][i["x"]] = i["value"]
+    
     
     createGrid()
     placeSquares()
 
     running = True
     while running:
-        pygame.init()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 #sys.exit()
             if event.type == pygame.KEYDOWN:
-                grid = solve()
+                solve()
+                gridPrint()
                 createGrid()
                 placeSquares()
-                gridPrint()
             
 
         pygame.display.flip()
@@ -127,7 +140,6 @@ def solve():
 
                 return
     gridPrint()
-    return grid
     #input("hello")
 
 
