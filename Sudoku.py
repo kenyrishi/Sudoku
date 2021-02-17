@@ -13,8 +13,8 @@ grid = [[0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0]]
 
-NUM_SQUARES = 9;
-DIFFICULTY = 1;
+NUM_SQUARES = 9
+DIFFICULTY = 2; #1,2,3
 
 pygame.init()
 BLACK = pygame.Color(0, 0, 0)
@@ -39,7 +39,7 @@ def main():
     screen.fill(WHITE)
 
 
-    r = requests.get("http://www.cs.utep.edu/cheon/ws/sudoku/new/?size=9&level=1")
+    r = requests.get(f"http://www.cs.utep.edu/cheon/ws/sudoku/new/?size={NUM_SQUARES}&level={DIFFICULTY}")
     response = r.json()
     if (response["response"]):
         squares = response["squares"]
