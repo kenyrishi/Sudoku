@@ -3,15 +3,15 @@ import requests
 import json
 #from pygame.locals import *
 
-grid = [[0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0]]
+orig_grid = [[0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0],
+             [0,0,0,0,0,0,0,0,0]]
 
 NUM_SQUARES = 9
 DIFFICULTY = 2; #1,2,3
@@ -44,13 +44,11 @@ def main():
     if (response["response"]):
         squares = response["squares"]
         for i in squares:
-            grid[i["y"]][i["x"]] = i["value"]
-    
+            orig_grid[i["y"]][i["x"]] = i["value"]
+    grid = orig_grid
     
     createGrid(grid)
-    for i in range (9):
-        for j in range (9):
-            placeSquares(grid,j,i)
+    putSquares(grid)
 
     running = True
     while running:
@@ -62,9 +60,7 @@ def main():
                 if (solve(grid)):
                     gridPrint(grid)
                     #createGrid(grid)
-                    for i in range (9):
-                        for j in range (9):
-                            placeSquares(grid,j,i)
+                    putSquares(grid)
             
 
         pygame.display.flip()
@@ -89,8 +85,15 @@ def createGrid(grid):
                                3*GRID_SIZE,3*GRID_SIZE)
             pygame.draw.rect(screen,BLACK,rect,5)                      
 
+def putSquares(grid):
+    for i in range (9):
+        for j in range (9):
+            placeSquare(grid,j,i)
 
-def placeSquares(grid,x,y):
+def placeSquare(grid,x,y):
+
+    rect = pygame.Rect(y*GRID_SIZE+3,x*GRID_SIZE+3,GRID_SIZE-6,GRID_SIZE-6)
+    pygame.draw.rect(screen,WHITE,rect)
 
     myFont = pygame.font.SysFont("Times New Roman", 28)
     
