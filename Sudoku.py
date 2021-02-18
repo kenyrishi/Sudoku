@@ -47,8 +47,10 @@ def main():
             grid[i["y"]][i["x"]] = i["value"]
     
     
-    createGrid()
-    placeSquares()
+    createGrid(grid)
+    for i in range (9):
+        for j in range (9):
+            placeSquares(grid,j,i)
 
     running = True
     while running:
@@ -57,10 +59,12 @@ def main():
                 running = False
                 #sys.exit()
             if event.type == pygame.KEYDOWN:
-                solve()
-                gridPrint()
-                createGrid()
-                placeSquares()
+                if (solve(grid)):
+                    gridPrint(grid)
+                    #createGrid(grid)
+                    for i in range (9):
+                        for j in range (9):
+                            placeSquares(grid,j,i)
             
 
         pygame.display.flip()
@@ -71,7 +75,7 @@ def main():
 
 
 
-def createGrid():
+def createGrid(grid):
     for x in range(9):
         for y in range(9):
             rect = pygame.Rect(x*GRID_SIZE,y*GRID_SIZE,
@@ -86,27 +90,26 @@ def createGrid():
             pygame.draw.rect(screen,BLACK,rect,5)                      
 
 
-def placeSquares():
-    global grid
+def placeSquares(grid,x,y):
 
-    myFont = pygame.font.SysFont("Times New Roman", 24)
+    myFont = pygame.font.SysFont("Times New Roman", 28)
     
+    num = str(grid[x][y])
+    if num == "0":
+        num = " "
+    squares = myFont.render(str(num),1,BLACK)
+    screen.blit(squares,(GRID_SIZE*y+18,GRID_SIZE*x+12))
+    
+
+def gridPrint(grid):
     for i in range(9):
         for j in range(9):
-            num = str(grid[i][j])
-            if num == "0":
-                num = " "
-            squares = myFont.render(str(num),1,BLACK)
-            screen.blit(squares,(GRID_SIZE*j+20,GRID_SIZE*i+15))
-    
+            print (grid[i][j], end = " ")
+        print("")
+    print("\n")
 
-def gridPrint():
-    global grid
-    for i in range(9):
-        print(" ".join(str(x) for x in grid[i]))
-
-def check(y,x,n):
-    global grid
+def check(y,x,n,grid):
+    #global grid
     for i in range(9):
         if grid[y][i] == n:
             return False
@@ -125,22 +128,32 @@ def check(y,x,n):
 
     return True
 
+def is_empty(grid,l):
+    for i in range(9):
+        for j in range(9):
+            if (grid[i][j] == 0):
+                l[0] = i
+                l[1] = j
+                return True    
+    return False
 
 
-def solve():
-    global grid
-    for y in range(9):
-        for x in range(9):
-            if grid[y][x] == 0:
-                for n in range (1,10):
-                    if check(y,x,n):
-                        grid[y][x] = n
-                        solve()
-                        grid[y][x] = 0
+def solve(grid):
+    l = [0,0]
+    if (not is_empty(grid,l)):
+        return True
+    row = l[0]
+    col = l[1]
 
-                return
-    gridPrint()
-    #input("hello")
+    for num in range(1,10):
+        if (check(row,col,num,grid)):
+            grid[row][col] = num
+            
+            if (solve(grid)):
+                return True
+            grid[row][col] = 0
+        
+    return False
 
 
 
