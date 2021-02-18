@@ -13,6 +13,8 @@ orig_grid = [[0,0,0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0,0,0]]
 
+grid =  [[0 for x in range(9)] for y in range(9)] 
+
 NUM_SQUARES = 9
 DIFFICULTY = 2; #1,2,3
 
@@ -45,7 +47,8 @@ def main():
         squares = response["squares"]
         for i in squares:
             orig_grid[i["y"]][i["x"]] = i["value"]
-    grid = orig_grid
+            grid[i["y"]][i["x"]] = i["value"]
+    
     
     createGrid(grid)
     putSquares(grid)
@@ -58,9 +61,7 @@ def main():
                 #sys.exit()
             if event.type == pygame.KEYDOWN:
                 if (solve(grid)):
-                    gridPrint(grid)
-                    #createGrid(grid)
-                    putSquares(grid)
+                    pass
             
 
         pygame.display.flip()
@@ -100,7 +101,10 @@ def placeSquare(grid,x,y):
     num = str(grid[x][y])
     if num == "0":
         num = " "
-    squares = myFont.render(str(num),1,BLACK)
+    colour = BLACK
+    if (grid[x][y] != orig_grid[x][y]):
+        colour = GREY
+    squares = myFont.render(str(num),1,colour)
     screen.blit(squares,(GRID_SIZE*y+18,GRID_SIZE*x+12))
     
 
@@ -151,6 +155,9 @@ def solve(grid):
     for num in range(1,10):
         if (check(row,col,num,grid)):
             grid[row][col] = num
+            placeSquare(grid,row,col)
+            pygame.time.wait(3)
+            pygame.display.update()
             
             if (solve(grid)):
                 return True
