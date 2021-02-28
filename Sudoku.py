@@ -60,7 +60,7 @@ def main():
                 running = False
                 #sys.exit()
             if event.type == pygame.KEYDOWN:
-                if (solve(grid)):
+                if (solve(grid,True)):
                     pass
             
 
@@ -145,7 +145,7 @@ def is_empty(grid,l):
     return False
 
 
-def solve(grid):
+def solve(grid,show):
     l = [0,0]
     if (not is_empty(grid,l)):
         return True
@@ -156,25 +156,16 @@ def solve(grid):
         if (check(row,col,num,grid)):
             grid[row][col] = num
             placeSquare(grid,row,col)
-            pygame.time.wait(3)
-            pygame.display.update()
+            if (show) :
+                pygame.time.wait(3)
+                pygame.display.update()
             
-            if (solve(grid)):
+            if (solve(grid,show)):
                 return True
             grid[row][col] = 0
         
     return False
 
-
-
-#gridPrint(grid)
-#print('\n\n')
-
-#solve()
-#screen.fill(WHITE)
-#createGrid()
-
-#placeSquares()
 
 
 if __name__ == "__main__":
