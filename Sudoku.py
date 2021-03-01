@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import requests
 import json
 #from pygame.locals import *
@@ -53,15 +54,18 @@ def main():
     createGrid(grid)
     putSquares(grid)
 
+
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 #sys.exit()
+
             if event.type == pygame.KEYDOWN:
-                if (solve(grid,True)):
-                    pass
+                if event.key == K_RETURN:
+                    solve(grid,True)
+                
             
 
         pygame.display.flip()
@@ -107,6 +111,9 @@ def placeSquare(grid,x,y):
     squares = myFont.render(str(num),1,colour)
     screen.blit(squares,(GRID_SIZE*y+18,GRID_SIZE*x+12))
     
+
+def placeNum(grid,x,y,num):
+    pass
 
 def gridPrint(grid):
     for i in range(9):
