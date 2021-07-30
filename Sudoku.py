@@ -66,6 +66,7 @@ def main():
                 if event.key == K_RETURN:
                     solve(grid,True)
                 
+                
             
 
         pygame.display.flip()
